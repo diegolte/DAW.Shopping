@@ -1,9 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UESAN.Shopping.Core.Entities;
 using UESAN.Shopping.Core.Interfaces;
 using UESAN.Shopping.Infrastructure.Data;
@@ -25,6 +20,14 @@ namespace UESAN.Shopping.Infrastructure.Repositories
             int rows = await _dbContext.SaveChangesAsync();
             return rows > 0;
         }
+        public async Task<User> RealSignIn(String email, String password)
+        {
+            return await _dbContext
+                        .User
+                        .Where(x => x.Email == email && x.Password == password)
+                        .FirstOrDefaultAsync();
+
+        }
 
         public async Task<User> SignIn(String email)
         {
@@ -32,6 +35,16 @@ namespace UESAN.Shopping.Infrastructure.Repositories
                         .User
                         .Where(x => x.Email == email)
                         .FirstOrDefaultAsync();
+
+        }
+
+        public async Task<bool> IsEmailRegistered(String email)
+        {
+            return await _dbContext
+                        .User
+                        .Where(x => x.Email == email)
+                        .AnyAsync();
+
         }
 
         public async Task<IEnumerable<User>> GetAll()

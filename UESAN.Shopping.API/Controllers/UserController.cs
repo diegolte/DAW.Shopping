@@ -16,6 +16,25 @@ namespace UESAN.Shopping.API.Controllers
         {
             _userService = userService;
         }
+
+        [HttpPost("SignInReal")]
+        public async Task<IActionResult> SignInReal([FromBody] UserAuthenticationDTO userDTO)
+        {
+            var result = await _userService.Validate(userDTO.Email, userDTO.Password);
+            if (result == null)
+                return NotFound();
+            return Ok(result);
+        }
+
+        [HttpPost("SignUpReal")]
+        public async Task<IActionResult> SignUpReal(UserInsertDTO userDTO)
+        {
+            var result = await _userService.Register(userDTO);
+            if (!result)
+                return BadRequest();
+            return Ok(result);
+        }
+
         [HttpPost("SignUp")]
         public async Task<IActionResult> SignUp(UserInsertDTO user)
         {

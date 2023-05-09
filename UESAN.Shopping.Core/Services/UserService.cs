@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Diagnostics.Metrics;
 using System.Linq;
 using System.Net;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 using UESAN.Shopping.Core.DTOs;
 using UESAN.Shopping.Core.Entities;
 using UESAN.Shopping.Core.Interfaces;
+using UESAN.Shopping.Infrastructure.Repositories;
 
 namespace UESAN.Shopping.Core.Services
 {
@@ -33,6 +35,54 @@ namespace UESAN.Shopping.Core.Services
             user.Password = userInsertDTO.Password;
             user.IsActive = true;
             user.Type = userInsertDTO.Type;
+
+
+
+            var result = await _userRepository.SignUp(user);
+            return result;
+        }
+
+        public async Task<UserAuthRequestDTO> Validate(string email, string password)
+        {
+            var user = await _userRepository.RealSignIn(email, password);
+            if (user == null)
+                return null;
+            var token = "";
+            var userDTO = new UserAuthRequestDTO()
+            {
+                Id = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                DateOfBirth = user.DateOfBirth,
+                Address = user.Address,
+                Country = user.Country,
+                Email = user.Email,
+                Token = token
+            };
+
+            return userDTO;
+
+
+        }
+
+        public async Task<bool> Register(UserInsertDTO userDTO)
+        {
+            var emailResult = await _userRepository.IsEmailRegistered(userDTO.Email);
+            if (emailResult)
+                return false;
+
+            var user = new User()
+            {
+                FirstName = userDTO.FirstName,
+                LastName = userDTO.LastName,
+                DateOfBirth = userDTO.DateOfBirth,
+                Country = userDTO.Country,
+                Address = userDTO.Address,
+                Email = userDTO.Email,
+                Password = userDTO.Password,
+                IsActive = true,
+                Type = userDTO.Type
+            };
 
             var result = await _userRepository.SignUp(user);
             return result;
