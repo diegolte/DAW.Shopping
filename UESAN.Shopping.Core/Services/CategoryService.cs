@@ -36,6 +36,8 @@ namespace UESAN.Shopping.Core.Services
         public async Task<CategoryDTO> GetById(int id)
         {
             var category = await _categoryRepository.GetById(id);
+            if (category == null)
+                return null;
             var categoryDTO = new CategoryDTO();
             categoryDTO.Id = category.Id;
             categoryDTO.Description = category.Description;

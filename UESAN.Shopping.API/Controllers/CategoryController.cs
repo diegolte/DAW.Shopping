@@ -20,6 +20,7 @@ namespace UESAN.Shopping.API.Controllers
             _categoryService = categoryService;
         }
 
+        [Route("GetAll")]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         { 
@@ -27,7 +28,8 @@ namespace UESAN.Shopping.API.Controllers
             return Ok(categories);
         }
 
-        [HttpGet("{id}")]
+        
+        [HttpGet("GetById/{id}")]
         public async Task<IActionResult> GetById(int id)
         {
             var category = await _categoryService.GetById(id);
@@ -58,6 +60,7 @@ namespace UESAN.Shopping.API.Controllers
             
             return NoContent();
         }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         { 
