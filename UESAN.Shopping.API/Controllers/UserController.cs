@@ -10,6 +10,7 @@ namespace UESAN.Shopping.API.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
+
         private readonly IUserService _userService;
 
         public UserController(IUserService userService)
